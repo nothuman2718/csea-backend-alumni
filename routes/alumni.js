@@ -34,14 +34,50 @@ router.post("/register", async (req, res) => {
     }
 });
 
-router.get("/login", (req, res) => {
-
-})
+// router.get("/login", (req, res) => {})
 // //Authenticate Alumni
 
-// router.put("/update/:alumniId")
+//todo use lodash pick only required props
+//dont send total json object stored in mongodb remove password
+router.put("/update/:alumniId", async (req, res) => {
+    try {
+        const user = await Alumni.findById(req.params.alumniId);
+        if (user) {
+            user.set(req.body); // or manually set each property
+            const result = await user.save();
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({ message: "No user found with that alumniId" });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "An error occurred while updating the user" });
+    }
+});
 
-// router.delete("/delete/:alumniId")
+router.delete("/delete/:alumniId", async (req, res) => {
+    try {
+        const result = await Alumni.findByIdAndDelete(req.params.alumniId);
+        if (result) {
+            res.status(204).json({ message: "User deleted successfully" });
+        } else {
+            res.status(404).json({ message: "No user found with that alumniId" });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "An error occurred while deleting the user" });
+    }
+});
 
-// router.get("/all")
+router.get("/all", (req, res) => {
+    Alumni.find()
+        .then((users) => {
+            res.status(200).json(users)
+        })
+        .catch(
+            (err) => {
+                console.log(err)
+                res.status(500).json({ message: "Something happened while fetching data" })
+            })
+})
 module.exports = router;
