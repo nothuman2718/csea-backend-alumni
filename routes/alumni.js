@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
 
         const savedUser = await alumni.save();
 
-        const token = jwt.sign({ username: req.body.username }, "secretkey");
+        const token = jwt.sign({ username: req.body.username }, config.get("jwtPrivateKey"));
         res.header("x-auth-token", token);
         res.status(201).json({ user: savedUser });//Use Lodash and remove hashed password while sending to user
     } catch (err) {

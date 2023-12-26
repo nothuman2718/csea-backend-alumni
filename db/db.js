@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
+const config = require("config");
 
 //Connect to mongoose
-mongoose.connect("mongodb+srv://nothuman2718:iVRt4iVPYntJTlXX@cluster0.mbxopog.mongodb.net/csea-alumni-backend-test")
+mongoose
+    .connect(config.get("database") + "/csea-alumni-backend-test")
     .then(() => { console.log("Connected to mongoose") })
     .catch((err) => { console.log(err) })
 

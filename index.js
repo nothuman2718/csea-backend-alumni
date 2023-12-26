@@ -1,7 +1,20 @@
 const express = require('express');
 const app = express();
+const config = require("config");
 const alumniRouter = require("./routes/alumni")
 const studentRouter = require("./routes/student");
+
+//check whether jwtPrivateKey is set 
+if (!config.get("jwtPrivateKey")) {
+    console.log("jwtPrivateKey is not set");
+    process.exit(1);
+}
+
+//check whether mongodb connection string is set
+if (!config.get("database")) {
+    console.log("MongoDB connection string  not set")
+    process.exit(1);
+}
 
 // Middleware for parsing request bodies
 app.use(express.json());
