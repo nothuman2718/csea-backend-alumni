@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 //Connect to mongoose
-mongoose.connect("mongodb+srv://nothuman2718:iVRt4iVPYntJTlXX@cluster0.mbxopog.mongodb.net/csea-alumni-backend")
+mongoose.connect("mongodb+srv://nothuman2718:iVRt4iVPYntJTlXX@cluster0.mbxopog.mongodb.net/csea-alumni-backend-test")
     .then(() => { console.log("Connected to mongoose") })
     .catch((err) => { console.log(err) })
 
@@ -29,4 +29,4 @@ const Student = mongoose.model("Student", studentSchema);
 
 module.exports = {
     Alumni, Student
-}
+};
