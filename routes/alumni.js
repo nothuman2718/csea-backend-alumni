@@ -19,7 +19,7 @@ router.post("/register", async (req, res) => {
         if (error) return res.status(400).json({ message: error.details[0].message })
 
         const alumni = new Alumni({ ...req.body });
-        const salt = await bcrypt.genSalt(config.get("bcryptSaltRounds"));
+        const salt = await bcrypt.genSalt(10);
         alumni.password = await bcrypt.hash(alumni.password, salt);
 
         const savedUser = await alumni.save();
