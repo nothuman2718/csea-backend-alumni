@@ -8,7 +8,7 @@ const invalidRoute = require("../middleware/invalidRoute")
 const validateObjectId = require("../middleware/validateObjectId");
 
 const router = Router();
-const Student = require("../models/student")
+const { Student, validateProps } = require("../models/student")
 
 
 router.post("/login", async (req, res) => {
@@ -32,6 +32,8 @@ router.post("/login", async (req, res) => {
 })
 
 router.put("/update/:id", studentAuth, validateObjectId, async (req, res) => {
+    const { error } = validateProps(req.body);
+    if (error) return res.status(400).json({ message: error.details[0].message });
     try {
         const user = await Student.findById(req.params.id);
         if (user) {

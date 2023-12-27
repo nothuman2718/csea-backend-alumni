@@ -3,10 +3,9 @@ const { Router } = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
-
 const router = Router();
 const Admin = require("../models/admin");
-const Student = require("../models/student")
+const { Student, validate } = require("../models/student")
 const adminAuth = require("../middleware/adminAuth");
 const validateObjectId = require("../middleware/validateObjectId");
 const invalidRoute = require("../middleware/invalidRoute")
@@ -14,7 +13,6 @@ const invalidRoute = require("../middleware/invalidRoute")
 router.post("/login", async (req, res) => {
     try {
         const user = await Admin.findOne({ username: req.body.username })
-
         if (!user) return res.status(401).json({ message: "Invalid Username" })
 
         const result = await bcrypt.compare(req.body.password, user.password);
@@ -31,10 +29,14 @@ router.post("/login", async (req, res) => {
     }
 })
 router.post("/studentRegister", adminAuth, async (req, res) => {
+    const { error } = validate(req.body);
+    if (error) return res.status(400).json({ message: error.details[0].message });
+
     try {
-        const student = new Student({ ...req.body });
         const user = await Student.findOne({ username: req.body.username })
-        if (user) return res.status(401).json({ message: "Student already exists with given username" })
+        if (user) return res.status(409).json({ message: "Student already exists with given username" })
+
+        const student = new Student({ ...req.body });
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(student.password, salt);
@@ -48,6 +50,7 @@ router.post("/studentRegister", adminAuth, async (req, res) => {
         res.status(500).json({ message: "Something went wrong during registration" });
     }
 });
+
 router.delete("/deleteStudent/:id", adminAuth, validateObjectId, async (req, res) => {
     try {
         const result = await Student.findByIdAndDelete(req.params.id);
