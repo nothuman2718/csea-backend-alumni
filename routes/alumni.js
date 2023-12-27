@@ -8,6 +8,8 @@ const alumniAuth = require("../middleware/alumniAuth")
 
 const router = Router();
 const { Alumni } = db;
+const globalCatch = require("../middleware/globalCatch")
+const invalidRoute = require("../middleware/invalidRoute")
 
 router.post("/register", async (req, res) => {
     try {
@@ -92,4 +94,7 @@ router.get("/all", alumniAuth, (req, res) => {
                 res.status(500).json({ message: "Something happened while fetching data" })
             })
 })
+router.use(globalCatch);
+router.use(invalidRoute)
+
 module.exports = router;

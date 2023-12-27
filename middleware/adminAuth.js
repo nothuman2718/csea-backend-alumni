@@ -8,7 +8,7 @@ function adminAuth(req, res, next) {
         next();
     } catch (err) {
         console.log(err);
-        res.status(401).json({ message: "You are not authorized " })
+        res.status(403).json({ message: "Access Denied" })
     }
 }
 

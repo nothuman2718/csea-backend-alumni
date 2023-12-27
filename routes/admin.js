@@ -8,6 +8,7 @@ const _ = require("lodash");
 const router = Router();
 const { Admin, Student } = db;
 const adminAuth = require("../middleware/adminAuth");
+const globalCatch = require("../middleware/globalCatch")
 
 router.post("/login", async (req, res) => {
     try {
@@ -59,5 +60,7 @@ router.delete("/deleteStudent/:studentId", adminAuth, async (req, res) => {
         res.status(500).json({ message: "An error occurred while deleting the student data" });
     }
 });
+router.use(globalCatch);
+router.use(invalidRoute)
 
 module.exports = router;
