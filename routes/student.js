@@ -5,10 +5,11 @@ const db = require("../db/db");
 const bcrypt = require("bcrypt");
 const _ = require("lodash")
 const studentAuth = require("../middleware/studentAuth")
+const globalCatch = require("../middleware/globalCatch")
+const validateObjectId = require("../middleware/validateObjectId");
 
 const router = Router();
 const { Student } = db;
-const globalCatch = require("../middleware/globalCatch")
 
 
 router.post("/login", async (req, res) => {
@@ -31,9 +32,9 @@ router.post("/login", async (req, res) => {
     }
 })
 
-router.put("/update/:studentId", studentAuth, async (req, res) => {
+router.put("/update/:id", studentAuth, validateObjectId, async (req, res) => {
     try {
-        const user = await Student.findById(req.params.studentId);
+        const user = await Student.findById(req.params.id);
         if (user) {
             user.set(req.body);
             const result = await user.save();

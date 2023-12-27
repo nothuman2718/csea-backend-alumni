@@ -9,6 +9,7 @@ const alumniAuth = require("../middleware/alumniAuth")
 const router = Router();
 const { Alumni } = db;
 const globalCatch = require("../middleware/globalCatch")
+const validateObjectId = require("../middleware/validateObjectId");
 const invalidRoute = require("../middleware/invalidRoute")
 
 router.post("/register", async (req, res) => {
@@ -52,9 +53,9 @@ router.post("/login", async (req, res) => {
     }
 })
 
-router.put("/update/:alumniId", alumniAuth, async (req, res) => {
+router.put("/update/:id", alumniAuth, validateObjectId, async (req, res) => {
     try {
-        const user = await Alumni.findById(req.params.alumniId);
+        const user = await Alumni.findById(req.params.id);
         if (user) {
             user.set(req.body);
             const result = await user.save();
@@ -68,9 +69,9 @@ router.put("/update/:alumniId", alumniAuth, async (req, res) => {
     }
 });
 
-router.delete("/delete/:alumniId", alumniAuth, async (req, res) => {
+router.delete("/delete/:id", alumniAuth, validateObjectId, async (req, res) => {
     try {
-        const result = await Alumni.findByIdAndDelete(req.params.alumniId);
+        const result = await Alumni.findByIdAndDelete(req.params.id);
         if (result) {
             res.status(204).json({ message: "User deleted successfully" });
         } else {

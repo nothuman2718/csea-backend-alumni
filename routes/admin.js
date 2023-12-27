@@ -8,6 +8,7 @@ const _ = require("lodash");
 const router = Router();
 const { Admin, Student } = db;
 const adminAuth = require("../middleware/adminAuth");
+const validateObjectId = require("../middleware/validateObjectId");
 const globalCatch = require("../middleware/globalCatch")
 
 router.post("/login", async (req, res) => {
@@ -47,9 +48,9 @@ router.post("/studentRegister", adminAuth, async (req, res) => {
         res.status(500).json({ message: "Something went wrong during registration" });
     }
 });
-router.delete("/deleteStudent/:studentId", adminAuth, async (req, res) => {
+router.delete("/deleteStudent/:id", adminAuth, validateObjectId, async (req, res) => {
     try {
-        const result = await Student.findByIdAndDelete(req.params.studentId);
+        const result = await Student.findByIdAndDelete(req.params.id);
         if (result) {
             res.status(204).json({ message: "Student Data deleted successfully" });
         } else {
