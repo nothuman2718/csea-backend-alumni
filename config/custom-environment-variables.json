@@ -1,4 +1,5 @@
 {
   "jwtPrivateKey": "csea_jwtPrivateKey",
-  "database":"database"
+  "database":"database",
+  "port":"csea_port"
 }

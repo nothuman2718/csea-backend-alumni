@@ -1,14 +1,12 @@
 const config = require("config");
 const { Router } = require("express");
 const jwt = require("jsonwebtoken");
-const db = require("../db/db");
 const bcrypt = require("bcrypt");
 const _ = require("lodash")
 const alumniAuth = require("../middleware/alumniAuth")
 
 const router = Router();
-const { Alumni } = db;
-const globalCatch = require("../middleware/globalCatch")
+const Alumni = require("../models/alumni")
 const validateObjectId = require("../middleware/validateObjectId");
 const invalidRoute = require("../middleware/invalidRoute")
 
@@ -95,7 +93,6 @@ router.get("/all", alumniAuth, (req, res) => {
                 res.status(500).json({ message: "Something happened while fetching data" })
             })
 })
-router.use(globalCatch);
 router.use(invalidRoute)
 
 module.exports = router;

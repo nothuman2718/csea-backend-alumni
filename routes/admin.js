@@ -1,15 +1,15 @@
 const config = require("config");
 const { Router } = require("express");
 const jwt = require("jsonwebtoken");
-const db = require("../db/db");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 
 const router = Router();
-const { Admin, Student } = db;
+const Admin = require("../models/admin");
+const Student = require("../models/student")
 const adminAuth = require("../middleware/adminAuth");
 const validateObjectId = require("../middleware/validateObjectId");
-const globalCatch = require("../middleware/globalCatch")
+const invalidRoute = require("../middleware/invalidRoute")
 
 router.post("/login", async (req, res) => {
     try {
@@ -61,7 +61,6 @@ router.delete("/deleteStudent/:id", adminAuth, validateObjectId, async (req, res
         res.status(500).json({ message: "An error occurred while deleting the student data" });
     }
 });
-router.use(globalCatch);
 router.use(invalidRoute)
 
 module.exports = router;
