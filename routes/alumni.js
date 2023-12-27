@@ -3,21 +3,17 @@ const { Router } = require("express");
 const jwt = require("jsonwebtoken");
 const db = require("../db/db");
 const bcrypt = require("bcrypt");
-const lodash = require("lodash")
+const _ = require("lodash")
+const alumniAuth = require("../middleware/alumniAuth")
 
 const router = Router();
-const { Alumni, Student } = db;
-
-//Todo : Check jwt privatekey
+const { Alumni } = db;
 
 router.post("/register", async (req, res) => {
-    //Todo Use Lodash
     try {
-        const alumni = new Alumni({
-            ...req.body//pick using lodash
-        });
-
-        //Main todo make user username is avaiable avoid multiple persons with same username
+        const alumni = new Alumni({ ...req.body });
+        const user = await Alumni.findOne({ username: req.body.username })
+        if (user) return res.status(401).json({ message: "User already exists with given username" })
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(alumni.password, salt);
@@ -27,25 +23,40 @@ router.post("/register", async (req, res) => {
 
         const token = jwt.sign({ username: req.body.username }, config.get("jwtPrivateKey"));
         res.header("x-auth-token", token);
-        res.status(201).json({ user: savedUser });//Use Lodash and remove hashed password while sending to user
+        res.status(201).json(_.omit(savedUser.toObject(), ["password", "__v"]));
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Something went wrong during registration" });
     }
 });
 
-// router.get("/login", (req, res) => {})
-// //Authenticate Alumni
+router.post("/login", async (req, res) => {
+    try {
+        const user = await Alumni.findOne({ username: req.body.username })
 
-//todo use lodash pick only required props
-//dont send total json object stored in mongodb remove password
-router.put("/update/:alumniId", async (req, res) => {
+        if (!user) return res.status(401).json({ message: "Invalid Username" })
+
+        const result = await bcrypt.compare(req.body.password, user.password);
+        if (result) {
+            const token = jwt.sign(_.omit(user.toObject(), ["password"]), config.get("jwtPrivateKey"));
+            res.header("x-auth-token", token);
+            res.status(200).json(_.omit(user.toObject(), ["password", "__v"]));
+        }
+        else res.status(401).json({ message: "Invalid Password" })
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Something happened during login" })
+    }
+})
+
+router.put("/update/:alumniId", alumniAuth, async (req, res) => {
     try {
         const user = await Alumni.findById(req.params.alumniId);
         if (user) {
-            user.set(req.body); // or manually set each property
+            user.set(req.body);
             const result = await user.save();
-            res.status(200).json(result);
+            res.status(200).json(_.omit(result.toObject(), ["password", "__v"]));
         } else {
             res.status(404).json({ message: "No user found with that alumniId" });
         }
@@ -55,7 +66,7 @@ router.put("/update/:alumniId", async (req, res) => {
     }
 });
 
-router.delete("/delete/:alumniId", async (req, res) => {
+router.delete("/delete/:alumniId", alumniAuth, async (req, res) => {
     try {
         const result = await Alumni.findByIdAndDelete(req.params.alumniId);
         if (result) {
@@ -69,8 +80,9 @@ router.delete("/delete/:alumniId", async (req, res) => {
     }
 });
 
-router.get("/all", (req, res) => {
+router.get("/all", alumniAuth, (req, res) => {
     Alumni.find()
+        .select("-password -__v")
         .then((users) => {
             res.status(200).json(users)
         })
