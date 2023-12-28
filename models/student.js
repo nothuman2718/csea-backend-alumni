@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const Joi = require("joi")
 //Implemenet data validation using joi
 
 const studentSchema = new mongoose.Schema({

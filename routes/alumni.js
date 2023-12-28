@@ -57,9 +57,18 @@ router.post("/login", async (req, res) => {
 })
 
 router.put("/update/:id", alumniAuth, validateObjectId, async (req, res) => {
-    const { error } = validateProps(req.body);
-    if (error) return res.status(400).json({ message: error.details[0].message });
     try {
+        if ("username" in req.body) {
+            const alumni = await Alumni.findOne({ username: req.body.username })
+            if (alumni) return res.status(401).json({ message: "User Already exists with given username" })
+        }
+        if ("password" in req.body) {
+            const salt = await bcrypt.genSalt(10);
+            req.body.password = await bcrypt.hash(req.body.password, salt);
+        }
+        const { error } = validateProps(req.body);
+        if (error) return res.status(400).json({ message: error.details[0].message });
+
         const user = await Alumni.findById(req.params.id);
         if (user) {
             user.set(req.body);

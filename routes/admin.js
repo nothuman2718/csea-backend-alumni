@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const router = Router();
-const Admin = require("../models/admin");
+const { Admin } = require("../models/admin");
 const { Student, validate } = require("../models/student")
 const adminAuth = require("../middleware/adminAuth");
 const validateObjectId = require("../middleware/validateObjectId");
@@ -39,9 +39,7 @@ router.post("/studentRegister", adminAuth, async (req, res) => {
         const student = new Student({ ...req.body });
 
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(student.password, salt);
-        student.password = hashedPassword;
-
+        student.password = await bcrypt.hash(student.password, salt);
         const savedUser = await student.save();
 
         res.status(201).json(_.omit(savedUser.toObject(), ["password", "__v"]));

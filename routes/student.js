@@ -8,6 +8,7 @@ const invalidRoute = require("../middleware/invalidRoute")
 const validateObjectId = require("../middleware/validateObjectId");
 
 const router = Router();
+const { Alumni } = require("../models/alumni")
 const { Student, validateProps } = require("../models/student")
 
 
@@ -32,9 +33,18 @@ router.post("/login", async (req, res) => {
 })
 
 router.put("/update/:id", studentAuth, validateObjectId, async (req, res) => {
-    const { error } = validateProps(req.body);
-    if (error) return res.status(400).json({ message: error.details[0].message });
+    //handle update of  username and password
     try {
+        if ("username" in req.body) {
+            const student = await Student.findOne({ username: req.body.username })
+            if (student) return res.status(401).json({ message: "User Already exists with given username" })
+        }
+        if ("password" in req.body) {
+            const salt = await bcrypt.genSalt(10);
+            req.body.password = await bcrypt.hash(req.body.password, salt);
+        }
+        const { error } = validateProps(req.body);
+        if (error) return res.status(400).json({ message: error.details[0].message });
         const user = await Student.findById(req.params.id);
         if (user) {
             user.set(req.body);
@@ -52,7 +62,7 @@ router.put("/update/:id", studentAuth, validateObjectId, async (req, res) => {
 
 
 router.get("/getAllAlumni", studentAuth, (req, res) => {
-    Student.find()
+    Alumni.find()
         .select("-password -__v")
         .then((users) => {
             res.status(200).json(users)
