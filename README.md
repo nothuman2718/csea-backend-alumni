@@ -85,8 +85,9 @@ There is no registration for Admins. They are already added to the database.
 
 ### Project Structure
 
-Project is Structured in Industry Standards.Clean and Readable Code.
+Project is Structured in Industry Standards in Clean and Readable Code.
 Following good practices like DRY, KISS, YAGNI, etc.
+![Tip](./seed/tip.png)
 
 ```
 ├── config(Contains all configuration files)
