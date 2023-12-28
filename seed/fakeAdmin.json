@@ -1,0 +1,27 @@
+
+
+[{
+    "_id": {
+      "$oid": "658d173ad8fb3ce8e5433045"
+    },
+    "username": "UGOffice",
+    "password": "$2b$10$W0YUI/UKWJqwxdYL5AVVV.11DOCWpnU4qpZoMNvMW5hcV3un6q3pe",
+    "name": "John"
+  },
+  {
+    "_id": {
+      "$oid": "658d176ad8fb3ce8e5433046"
+    },
+    "username": "Staff",
+    "password": "$2b$10$JdrOSbdpazQBZQ88sIZLSu1TODJqg1ENfSB4DJ.dA7PsoKEDpNccW",
+    "name": "Rahul"
+  },
+  {
+    "_id": {
+      "$oid": "658d17b6d8fb3ce8e5433047"
+    },
+    "username": "fa",
+    "password": "$2b$10$JdrOSbdpazQBZQ88sIZLSu1TODJqg1ENfSB4DJ.dA7PsoKEDpNccW",
+    "name": "manjusha"
+  }]
+  

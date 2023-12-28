@@ -1,6 +1,6 @@
 # CSEA Web Development - CRUD API
 
-This is a solution to the [API - CRUD](./task_data/CRUD%20API.pdf).(Slightly Modifed From Orginal Problem Statement)
+This is a solution to the [API - CRUD](./seed/CRUD%20API.pdf).(Slightly Modifed From Orginal Problem Statement)
 
 ## Table of contents
 
@@ -162,6 +162,6 @@ Following good practices like DRY, KISS, YAGNI, etc.
 
 ### Suggestions
 
-- while running the server on your machine you need fake admin data which you can get from [here](./task_data/fakeAdmin.json)
+- While running the server on your machine you need fake admin data which you can get from [here](./seed/fakeAdmin.json).Password for all fake data of admin is password itself.After setting up the mongoDB connection string, you can add fake admin data to your database by many ways .One way I suuest is to use [MongoDB Compass](https://www.mongodb.com/products/compass) to import the data from JSON file import to your admin database collection.
 - You can use [Postman](https://www.postman.com/) to test the API
 - You can use [MongoDB Compass](https://www.mongodb.com/products/compass) to view the database
