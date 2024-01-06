@@ -1,14 +1,23 @@
+// Node.js modules
 const config = require("config");
+
+// Third-party modules
 const { Router } = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
-const router = Router();
+
+// Models
 const { Admin } = require("../models/admin");
-const { Student, validate } = require("../models/student")
+const { Student, validate } = require("../models/student");
+
+// Middleware
 const adminAuth = require("../middleware/adminAuth");
 const validateObjectId = require("../middleware/validateObjectId");
-const invalidRoute = require("../middleware/invalidRoute")
+const invalidRoute = require("../middleware/invalidRoute");
+
+// Router
+const router = Router();
 
 router.post("/login", async (req, res) => {
     try {
@@ -29,12 +38,13 @@ router.post("/login", async (req, res) => {
     }
 })
 router.post("/studentRegister", adminAuth, async (req, res) => {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).json({ message: error.details[0].message });
 
     try {
         const user = await Student.findOne({ username: req.body.username })
         if (user) return res.status(409).json({ message: "Student already exists with given username" })
+
+        const { error } = validate(req.body);
+        if (error) return res.status(400).json({ message: error.details[0].message });
 
         const student = new Student({ ...req.body });
 

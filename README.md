@@ -4,7 +4,7 @@ This is a solution to the [API - CRUD](./seed/CRUD%20API.pdf).(Slightly Modifed 
 
 ## Table of contents
 
-- [Overview](#overview)
+- [Overview](#overview)
   - [Problem Description](#problem-description)
   - [Challenges](#challenges)
   - [Enhancements](#enhancements)
@@ -77,6 +77,7 @@ There is no registration for Admins. They are already added to the database.
 
 ### Continued development
 
+- [Move to TypeScript](https://www.typescriptlang.org/docs/) - TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. TypeScript is pure object-oriented with classes, interfaces, and statically typed like C# or Java.
 - [Add Unit Tests and Integration Tests](https://jestjs.io/docs/en/getting-started) - Writing tests in programming is crucial for ensuring code quality and functionality. Unit tests help verify individual components function as expected, catching bugs early. Integration tests confirm different parts of the system work together correctly, identifying issues that may arise from their interaction. Tests provide a safety net for future changes, making sure updates or refactoring don't break existing functionality. They also serve as documentation, illustrating how the code is supposed to work. Overall, testing contributes to building reliable, maintainable software.
 - [Add winston logger](https://www.npmjs.com/package/winston) - A logger for just about everything.For logging errors, info messages, debug messages etc ...
 - [Impliment More Validation using Joi](https://joi.dev/api/) - The most powerful schema description language and data validator for JavaScript.

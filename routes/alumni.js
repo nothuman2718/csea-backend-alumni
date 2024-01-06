@@ -1,14 +1,22 @@
+// Node.js modules
 const config = require("config");
+
+// Third-party modules
 const { Router } = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const _ = require("lodash")
-const alumniAuth = require("../middleware/alumniAuth")
+const _ = require("lodash");
 
-const router = Router();
-const { Alumni, validate, validateProps } = require("../models/alumni")
+// Models
+const { Alumni, validate, validateProps } = require("../models/alumni");
+
+// Middleware
+const alumniAuth = require("../middleware/alumniAuth");
 const validateObjectId = require("../middleware/validateObjectId");
-const invalidRoute = require("../middleware/invalidRoute")
+const invalidRoute = require("../middleware/invalidRoute");
+
+// Router
+const router = Router();
 
 router.post("/register", async (req, res) => {
     try {
@@ -66,17 +74,22 @@ router.put("/update/:id", alumniAuth, validateObjectId, async (req, res) => {
             const salt = await bcrypt.genSalt(10);
             req.body.password = await bcrypt.hash(req.body.password, salt);
         }
-        const { error } = validateProps(req.body);
-        if (error) return res.status(400).json({ message: error.details[0].message });
-
         const user = await Alumni.findById(req.params.id);
         if (user) {
-            user.set(req.body);
-            const result = await user.save();
-            res.status(200).json(_.omit(result.toObject(), ["password", "__v"]));
+            const { error } = validateProps(req.body);
+            if (error) return res.status(400).json({ message: error.details[0].message });
+
+            if (req.username === user.username) {
+                user.set(req.body);
+                const result = await user.save();
+                res.status(200).json(_.omit(result.toObject(), ["password", "__v"]));
+            } else return res.status(403).json({ message: "You cannot change other user data by providing their id" })
         } else {
             res.status(404).json({ message: "No user found with that alumniId" });
         }
+
+
+
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "An error occurred while updating the user" });
