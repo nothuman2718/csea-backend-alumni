@@ -8,7 +8,7 @@ const bcrypt = require("bcrypt");
 const _ = require("lodash");
 
 // Models
-const { Admin } = require("../models/admin");
+const { Admin, validateAdmin } = require("../models/admin");
 const { Student, validate } = require("../models/student");
 
 // Middleware
@@ -21,6 +21,9 @@ const router = Router();
 
 router.post("/login", async (req, res) => {
     try {
+        const { error } = validate(req.body);
+        if (error) return res.status(400).json({ message: error.details[0].message });
+
         const user = await Admin.findOne({ username: req.body.username })
         if (!user) return res.status(401).json({ message: "Invalid Username" })
 

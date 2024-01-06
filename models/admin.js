@@ -20,4 +20,4 @@ function validateAdmin(admin) {
 }
 
 exports.Admin = Admin;
-exports.validate = validateAdmin;
+exports.validateAdmin = validateAdmin;
