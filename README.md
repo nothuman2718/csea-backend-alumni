@@ -23,6 +23,8 @@ This is a solution to the [API - CRUD](./seed/CRUD%20API.pdf).(Slightly Modifed 
 
 The task involves creating a RESTful API to facilitate Alumni Affairs, where alumni can register, log in, update, and delete their information. Additionally, the API allows current college students to view profiles of registered alumni. Try to implement as many of these.
 
+**Graduation year must be less than or equal to 2019 there is small mistake in the problem statement example it is given 2020(But B20's are currently in college)**
+
 #### Theses are routes defined in Problem Statement
 
 - Alumni Registration (POST)

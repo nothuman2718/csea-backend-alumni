@@ -22,17 +22,20 @@ const router = Router();
 
 router.post("/login", async (req, res) => {
     try {
-        const user = await Student.findOne({ username: req.body.username })
+        if (("username" in req.body) && ("password" in req.body)) {
 
-        if (!user) return res.status(401).json({ message: "Invalid Username" })
+            const user = await Student.findOne({ username: req.body.username })
 
-        const result = await bcrypt.compare(req.body.password, user.password);
-        if (result) {
-            const token = jwt.sign(_.omit(user.toObject(), ["password"]), config.get("jwtPrivateKey"));
-            res.header("x-auth-token", token);
-            res.status(200).json(_.omit(user.toObject(), ["password", "__v"]));
-        }
-        else res.status(401).json({ message: "Invalid Password" })
+            if (!user) return res.status(401).json({ message: "Invalid Username" })
+
+            const result = await bcrypt.compare(req.body.password, user.password);
+            if (result) {
+                const token = jwt.sign(_.omit(user.toObject(), ["password"]), config.get("jwtPrivateKey"));
+                res.header("x-auth-token", token);
+                res.status(200).json(_.omit(user.toObject(), ["password", "__v"]));
+            }
+            else res.status(401).json({ message: "Invalid Password" })
+        } else return res.status(401).json({ message: "username and password are two required fields" })
     }
     catch (err) {
         console.log(err);
@@ -54,14 +57,16 @@ router.put("/update/:id", studentAuth, validateObjectId, async (req, res) => {
 
         const user = await Student.findById(req.params.id);
         if (user) {
-            const { error } = validateProps(req.body);
-            if (error) return res.status(400).json({ message: error.details[0].message });
-
             if (req.username === user.username) {
+                const { error } = validateProps(req.body);
+                if (error) return res.status(400).json({ message: error.details[0].message });
+
                 user.set(req.body);
                 const result = await user.save();
                 res.status(200).json(_.omit(result.toObject(), ["password", "__v"]));
             } else return res.status(403).json({ message: "You cannot change other user data by providing their id" })
+
+
 
         } else {
             res.status(404).json({ message: "No user found with that alumniId" });

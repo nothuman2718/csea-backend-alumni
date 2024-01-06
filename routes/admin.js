@@ -21,7 +21,7 @@ const router = Router();
 
 router.post("/login", async (req, res) => {
     try {
-        const { error } = validate(req.body);
+        const { error } = validateAdmin(req.body);
         if (error) return res.status(400).json({ message: error.details[0].message });
 
         const user = await Admin.findOne({ username: req.body.username })
