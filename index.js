@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const config = require("config");
 
-require("./startup/config");
+require("./startup/config")();
 require("./startup/routes")(app);
 require("./startup/db")();
 
